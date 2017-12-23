@@ -230,8 +230,9 @@ export default class StatementParser extends ExpressionParser {
         );
       }
     }
-
-    if (!this.match(tt._class)) {
+    const allowLet = this.options.allowLetDecorators;
+    
+    if (!this.match(tt._class) || allowLet) {
       this.raise(
         this.state.start,
         "Leading decorators must be attached to a class declaration",
