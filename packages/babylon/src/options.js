@@ -10,6 +10,7 @@ export type Options = {
   allowReturnOutsideFunction: boolean,
   allowImportExportEverywhere: boolean,
   allowSuperOutsideMethod: boolean,
+  allowLetDecorators: boolean,
   plugins: $ReadOnlyArray<string>,
   strictMode: ?boolean,
   ranges: boolean,
@@ -32,6 +33,8 @@ export const defaultOptions: Options = {
   allowImportExportEverywhere: false,
   // TODO
   allowSuperOutsideMethod: false,
+  // When enabled, decorators could be used on let
+  allowLetDecorators: false,
   // An array of plugins to enable
   plugins: [],
   // TODO

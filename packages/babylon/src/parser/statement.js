@@ -113,6 +113,7 @@ export default class StatementParser extends ExpressionParser {
         return this.parseTryStatement(node);
 
       case tt._let:
+        this.parseLetStatement(node);
       case tt._const:
         if (!declaration) this.unexpected(); // NOTE: falls through to _var
 
@@ -230,13 +231,21 @@ export default class StatementParser extends ExpressionParser {
         );
       }
     }
+
     const allowLet = this.options.allowLetDecorators;
-    
-    if (!this.match(tt._class) || allowLet) {
-      this.raise(
-        this.state.start,
-        "Leading decorators must be attached to a class declaration",
-      );
+
+    if (!this.match(tt._class)) {
+      if (!(allowLet && this.match(tt._let))) {
+        this.raise(
+          this.state.start,
+          "Leading decorators must be attached to a class declaration or a let declaration",
+        );
+      } else if (!allowLet) {
+        this.raise(
+          this.state.start,
+          "Leading decorators must be attached to a class declaration",
+        );
+      }
     }
   }
 
@@ -513,6 +522,13 @@ export default class StatementParser extends ExpressionParser {
     }
 
     return this.finishNode(node, "TryStatement");
+  }
+
+  parseLetStatement(node: N.VariableDeclaration): N.VariableDeclaration {
+    const allowLet = this.options.allowLetDecorators;
+    if (allowLet) {
+      this.takeDecorators(node);
+    }
   }
 
   parseVarStatement(
